@@ -1,0 +1,161 @@
+<div id="anniv">
+  <div class="hearts"></div>
+  <div class="card">
+    <p class="eyebrow">Maimai &amp; Paopao</p>
+    <h1>Our First Anniversary!</h1>
+    <div class="countdown" id="countdown">
+      <div class="unit"><span id="days">0</span><small>days</small></div>
+      <div class="unit"><span id="hours">0</span><small>hours</small></div>
+      <div class="unit"><span id="minutes">0</span><small>minutes</small></div>
+      <div class="unit"><span id="seconds">0</span><small>seconds</small></div>
+    </div>
+    <p class="since">until December 03, 2026</p>
+    <p class="tap">tap the screen for more hearts! hehe ♡</p>
+  </div>
+</div>
+
+<style>
+  #anniv {
+    position: relative;
+    width: 100%;
+    min-height: 520px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #ffe3ec 0%, #fff6d6 55%, #ffe9f2 100%);
+    font-family: 'Georgia', 'Playfair Display', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+  }
+  #anniv .card {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 40px 28px;
+  }
+  #anniv .eyebrow {
+    margin: 0 0 6px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: #c98a9e;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  #anniv h1 {
+    margin: 0 0 26px;
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 400;
+    color: #8c4a5f;
+    letter-spacing: 0.02em;
+  }
+  #anniv .countdown {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  #anniv .unit {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 14px;
+    padding: 14px 16px;
+    min-width: 72px;
+    box-shadow: 0 8px 24px rgba(214, 150, 170, 0.18);
+    backdrop-filter: blur(6px);
+  }
+  #anniv .unit span {
+    display: block;
+    font-size: clamp(22px, 3.4vw, 34px);
+    color: #a85a72;
+    font-variant-numeric: tabular-nums;
+  }
+  #anniv .unit small {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #b98a99;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  #anniv .since {
+    margin: 24px 0 4px;
+    font-style: italic;
+    color: #a87b8a;
+    font-size: 15px;
+  }
+  #anniv .tap {
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #c9a3b0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  #anniv .hearts {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  #anniv .heart {
+    position: absolute;
+    bottom: -40px;
+    font-size: 18px;
+    color: #f2a7bd;
+    animation: floatUp linear forwards;
+    opacity: 0;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) scale(0.7) rotate(0deg); opacity: 0; }
+    12%  { opacity: 0.9; }
+    100% { transform: translateY(-560px) scale(1.15) rotate(28deg); opacity: 0; }
+  }
+</style>
+
+<script>
+(function () {
+  var TARGET = new Date(2026, 11, 3, 0, 0, 0); // Dec 3, 2026
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function tick() {
+    var diff = TARGET.getTime() - Date.now();
+    if (diff < 0) diff = 0;
+    var s = Math.floor(diff / 1000);
+    document.getElementById('days').textContent    = Math.floor(s / 86400);
+    document.getElementById('hours').textContent   = pad(Math.floor(s % 86400 / 3600));
+    document.getElementById('minutes').textContent = pad(Math.floor(s % 3600 / 60));
+    document.getElementById('seconds').textContent = pad(s % 60);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  var layer = document.querySelector('#anniv .hearts');
+  var glyphs = ['♡', '♥', '✿', '❀'];
+
+  function makeHeart(x, y) {
+    var h = document.createElement('span');
+    h.className = 'heart';
+    h.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+    h.style.fontSize = (12 + Math.random() * 20) + 'px';
+    h.style.left = (x !== undefined ? x : Math.random() * 100) + '%';
+    h.style.bottom = (y !== undefined ? (100 - y) : -5) + '%';
+    h.style.color = Math.random() > 0.5 ? '#f2a7bd' : '#f7d774';
+    h.style.animationDuration = (5 + Math.random() * 4) + 's';
+    layer.appendChild(h);
+    setTimeout(function () { h.remove(); }, 9500);
+  }
+
+  setInterval(function () { makeHeart(); }, 700);
+
+  document.getElementById('anniv').addEventListener('click', function (e) {
+    var r = this.getBoundingClientRect();
+    var x = ((e.clientX - r.left) / r.width) * 100;
+    var y = ((e.clientY - r.top) / r.height) * 100;
+    for (var i = 0; i < 5; i++) {
+      setTimeout(function () { makeHeart(x + (Math.random() * 8 - 4), y); }, i * 90);
+    }
+  });
+})();
+</script>
